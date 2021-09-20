@@ -12,6 +12,8 @@ web-build/
 Notes.md
 .env
 
+Barcodes
+
 # Xcode
 !**/*.xcodeproj
 !**/*.pbxproj

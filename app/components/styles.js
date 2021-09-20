@@ -206,11 +206,30 @@ export const StyledProductBox = styled.View`
   font-size: 15px;
 	background-color: ${ secondary };
 	padding: 10px;
-
 `;
 
 export const StyledProductText = styled.Text`
   color: ${brand};
   font-size: 15px;
 	text-align: center;
+`;
+
+export const StyledScannerContainer = styled.View`
+	color: ${brand};
+	justify-content: center;
+  align-items: center;
+	width: 100%;
+`;
+
+export const StyledScannerBox = styled.View`
+	color: ${brand};
+	font-size: 15px;
+	background-color: ${ secondary };
+	padding: 10px;
+`;
+
+export const StyledScannerText = styled.Text`
+  color: ${brand};
+  font-size: 15px;
+	margin: 20px;
 `;

@@ -1,8 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
-import { Image, StyleSheet, Text, 
-  Dimensions,
+import { 
   View, 
+	Text, 
+	Image, 
+	StyleSheet, 
+  Dimensions,
   Touchable,
   TouchableWithoutFeedback, 
   TouchableOpacity,
@@ -11,42 +15,32 @@ import { Image, StyleSheet, Text,
   Button, 
   FlatList,
   ActivityIndicator,
-  } from 'react-native';
-  
-import { BarCodeScanner } from 'expo-barcode-scanner';
+} from 'react-native';
+
+import { ApiContext } from '../../api-context';
 
 import { 
 	StyledContainer,
 	InnerContainer,
-	PageLogo,
-	PageTitle,
 	SubTitle,
-	StyledFormArea,
-	LeftIcon,
-	RightIcon,
-	StyledInputLabel,
-	StyledButton,
-	StyledTextInput,
 	Colors,
-	Buttontext,
-	MsgBox,
-	Line,
-	ExtraText,
-	ExtraView,
-	TextLink,
-	TextLinkContent,
+	StyledScannerContainer,
+	StyledScannerBox,
+	StyledScannerText,
 } from '../components/styles'
 
 const { primary, brand, darkLight } = Colors;
 
 function Scanner({navigation}, props) {
 
-  const [hasPermission, setHasPermission] = useState(null);
+	const api = useContext(ApiContext)
+	
+	const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [productData, setProductData] = useState("No product");
-
+  const [productData, setProductData] = useState(null);
+	
   const askForCameraPermission = () => {
-      (async () => {
+		(async () => {
           const {status} = await BarCodeScanner.requestPermissionsAsync();
           setHasPermission(status == "granted")
       })()
@@ -54,9 +48,13 @@ function Scanner({navigation}, props) {
 
   const handleBarCodeScanned = ({type, data}) => {
     setScanned(true);
-    setProductData(data);
 
-    // Set data of found product by fetching the api
+		api.get(`product/c/${data}`)
+		.then(res => {
+			console.log(res)
+			if (res.status == 200) { setProductData(res.data); }		
+		})
+		.catch(err => { console.log(err) })
 
     console.log("Type: " + type + "\ndata: " + data)
   }
@@ -64,40 +62,48 @@ function Scanner({navigation}, props) {
   askForCameraPermission();
 
   if (hasPermission === null) {
-      return(
-        <View style={styles.container}>
-            <Text>Requesting for camera permission</Text>
-        </View>
-      )
+		return(
+			<View style={styles.container}>
+					<Text>Requesting for camera permission</Text>
+			</View>
+		)
   }
 
   if (hasPermission === false) {
-      return(
-        <View style={styles.container}>
-            <Text>No access to camera</Text>
-            <Button title={"Allow camera"} onPress={() => askForCameraPermission()}/>
-        </View>
-      )
+		return(
+			<View style={styles.container}>
+					<Text>No access to camera</Text>
+					<Button title={"Allow camera"} onPress={() => askForCameraPermission()}/>
+			</View>
+		)
   }   
 
   return (
 		<StyledContainer>
 			<InnerContainer>
-				<PageTitle>Javap</PageTitle>
+				{/* <PageTitle>Javap</PageTitle> */}
 				<SubTitle>Product Scanner</SubTitle>
 				
 				{scanned ?
-		
-					<Button title={"Scan again ?"} onPress={() => setScanned(false)} color='tomato' />
+					<Button title={"Scan again ?"} onPress={() => {
+						setProductData(null)
+						setScanned(false)}
+					} color='tomato' />
 					:
-					<View style={styles.barCodeBox}>
-						<BarCodeScanner style={styles.scanner}
+					<StyledScannerContainer>
+						<BarCodeScanner style={{width: 400, height: 300,}}
 								onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} />
-					</View>
-		
+					</StyledScannerContainer>
 				}
 
-				<Text style={styles.mainText}>{productData}</Text>
+				{ productData &&
+					<StyledScannerBox>
+						<StyledScannerText>{ productData.name }</StyledScannerText>
+						<StyledScannerText>{ productData.price }</StyledScannerText>
+						<StyledScannerText>{ productData.barcode }</StyledScannerText>
+						<StyledScannerText>{ productData.score }</StyledScannerText>
+					</StyledScannerBox>
+				}
 
 			</InnerContainer>
 		</StyledContainer>
