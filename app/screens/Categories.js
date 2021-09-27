@@ -16,7 +16,7 @@ import {
 
 const { primary, brand, darkLight } = Colors;
 
-const Catgories = ({navigation}, props) => {
+const Categories = ({navigation}, props) => {
 
 	// Get api axios object from react context
 	const api = useContext(ApiContext)
@@ -24,10 +24,9 @@ const Catgories = ({navigation}, props) => {
 	const [categoryList, setCategoryList] = useState([]);
 
 	const getCategories = async () => {
-		let categories = await api.get('category')
-		.then(res => res.data)
+		await api.get('category')
+		.then(res => { if (res.status == 200) { setCategoryList(res.data); } })
 		.catch(err => { console.log(err) })
-		setCategoryList(categories)
 	}
 
 	// The second param is an array of variables that the component will check to make sure changed before re-rendering. 
@@ -70,4 +69,4 @@ const CategoryBox = ({ navigation, category  }) => (
 	</StyledCategoryBox>
 )
 
-export default Catgories;
+export default Categories;

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import * as SecureStore from 'expo-secure-store';
 
 import { 
 	StyledContainer,
@@ -8,16 +7,19 @@ import {
 	PageLogo,
 	PageTitle,
 	StyledButton,
+	SubTitle,
 	ButtonText,
 } from '../components/styles'
 
-const HomePage = ({navigation}, props) => {
+import UserContext from '../../user-context';
 
-	const getValueFor = async (key) => {
-		let result = await SecureStore.getItemAsync(key);
-		if (result) { console.log("🔐 Here's your value 🔐 \n" + result); }
-		return result;
-	}
+const HomePage = ({navigation, route}) => {
+
+	const { newUserName } = route.params ? route.params : "";
+
+	let userName = useContext(UserContext)
+	
+	if (newUserName != null && newUserName != "") { userName = newUserName }
 
 	return (
 		<StyledContainer>
@@ -27,6 +29,8 @@ const HomePage = ({navigation}, props) => {
 				<PageLogo resizeMode="cover" source={ require('../assets/meanfood.png') } />
 				<PageTitle>Food Scan</PageTitle>
 
+				{userName != "" && <SubTitle>{ userName }</SubTitle> }
+
 				<StyledButton onPress={() => navigation.navigate("CategoriesScreen")} style={{width: "80%"}}>
 					<ButtonText>Categories</ButtonText>
 				</StyledButton>
@@ -35,13 +39,24 @@ const HomePage = ({navigation}, props) => {
 					<ButtonText>Scanner</ButtonText>
 				</StyledButton>
 
-				<StyledButton onPress={() => navigation.navigate("LoginScreen")} style={{width: "80%"}}>
-					<ButtonText>Login</ButtonText>
-				</StyledButton>
-
-				<StyledButton  onPress={() => navigation.navigate("SignupScreen")} style={{width: "80%"}}>
-					<ButtonText>Signup</ButtonText>
-				</StyledButton>
+					{userName != "" ?
+					<InnerContainer>
+						<StyledButton onPress={() => navigation.navigate("ProductAddScreen")} style={{width: "80%"}}>
+							<ButtonText>Add product</ButtonText>
+						</StyledButton>
+						<StyledButton onPress={() => logout}>
+							<ButtonText>Logout</ButtonText>
+						</StyledButton>
+					</InnerContainer> 
+					: 
+					<InnerContainer>
+						<StyledButton onPress={() => navigation.navigate("LoginScreen")} style={{width: "80%"}}>
+							<ButtonText>Login</ButtonText>
+						</StyledButton>
+						<StyledButton  onPress={() => navigation.navigate("SignupScreen")} style={{width: "80%"}}>
+							<ButtonText>Signup</ButtonText>
+						</StyledButton>
+					</InnerContainer>}
 
 			</InnerContainer>
 		</StyledContainer>

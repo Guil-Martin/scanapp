@@ -46,17 +46,16 @@ const Login = ({navigation}, props) => {
 		const [messageType, setMessageType] = useState();
 		const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
-
 		const handleLogin = async (credentials, setSubmitting) => {
 
 			handleMessage(null);
 
-			await server.post('product', credentials)
+			await server.post('auth', credentials)
 			.then(res => {
-				if (res.response.status != 200) {
-					handleMessage(res.message, res.status)
+				if (res.status != 200) {
+					handleMessage(res.message)
 				} else {
-					SecureStore.setItemAsync("jwt", res.response.header.Authorization)
+					SecureStore.setItemAsync("jwt", res.headers.authorization)
 					navigation.navigate("HomeScreen")
 				}
 			})

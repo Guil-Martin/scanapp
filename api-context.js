@@ -5,6 +5,7 @@ import { SERVER_URL, API_URL } from '@env';
 
 const server = axios.create({
 	baseURL: `${SERVER_URL}`,
+	proxy:false,
 	headers: {
 		'Accept': 'application/json',
 		'Content-Type': 'application/json',
@@ -13,7 +14,8 @@ const server = axios.create({
 })
 
 const api = axios.create({
-	baseURL: `${API_URL}`,
+	baseURL: 'localhost:8080/api/',
+	proxy:false,
 	headers: {
 		'Accept': 'application/json',
 		'Content-Type': 'application/json',

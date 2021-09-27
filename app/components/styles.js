@@ -19,12 +19,14 @@ const { primary, secondary, tertiary, darkLight, brand, green, red } = Colors;
 export const StyledContainer = styled.View`
   flex: 1;
   padding: 25px;
+	height: 100%;
   padding-top: ${StatusBarHeight + 30}px;
   background-color: ${Colors.primary};
 `;
 
 export const InnerContainer = styled.View`
   width: 100%;
+	height: 100%;
   flex: 1;
   align-items: center;
 `;
@@ -203,16 +205,41 @@ export const StyledProductContainer = styled.View`
 
 export const StyledProductBox = styled.View`
   color: ${brand};
+	align-items: flex-start;
   font-size: 15px;
 	background-color: ${ secondary };
 	padding: 10px;
+	margin: 10px;
 `;
+
+const productTextType = (type) => {
+		if (type == 'title') {
+			return `
+				color: ${ tertiary };
+				font-size: 20px;
+			`
+		} else if (type == 'price') {
+			return `
+				color: ${ tertiary };
+				font-size: 18px;
+			`
+		} else if (type == 'score') {
+			return `
+			`
+		} else if (type == 'barcode') {
+			return `
+			`
+		}
+}
 
 export const StyledProductText = styled.Text`
   color: ${brand};
   font-size: 15px;
 	text-align: center;
+	${ (props) => productTextType(props.type) }
 `;
+
+
 
 export const StyledScannerContainer = styled.View`
 	color: ${brand};

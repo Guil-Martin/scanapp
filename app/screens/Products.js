@@ -20,7 +20,6 @@ const Products = ({navigation, route}) => {
 
 	const { category } = route.params;
 
-	console.log(category.label);
 	// Get api axios object from react context
 	const api = useContext(ApiContext)
 
@@ -45,9 +44,9 @@ const Products = ({navigation, route}) => {
 				<PageTitle> { category.label } </PageTitle>
 				{/* <SubTitle>Catgories</SubTitle> */}
 
-				<Button title="Home"
+				{/* <Button title="Home"
 					onPress={() => navigation.navigate("HomeScreen")}
-				/>
+				/> */}
 
 				<StyledProductContainer>
 				{ productList.length != 0 && 
@@ -66,10 +65,10 @@ const Products = ({navigation, route}) => {
 
 const CategoryBox = ({ product  }) => (
 	<StyledProductBox>
-		<StyledProductText>{ product.name }</StyledProductText>
-		<StyledProductText>{`Price: ${product.price}`}</StyledProductText>
-		<StyledProductText>{`Score: ${product.score}`}</StyledProductText>
-		<StyledProductText>{`Barcode: ${product.barcode}`}</StyledProductText>
+		<StyledProductText type="title">{ product.name }</StyledProductText>
+		<StyledProductText type="price">{`Price: ${product.price}`} €</StyledProductText>
+		<StyledProductText type="score">{`Score: ${product.score}`}/100</StyledProductText>
+		<StyledProductText type="barcode">{`Barcode: ${product.barcode}`}</StyledProductText>
 	</StyledProductBox>
 )
 
